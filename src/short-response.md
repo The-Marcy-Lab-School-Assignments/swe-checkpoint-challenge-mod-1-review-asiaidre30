@@ -1,6 +1,7 @@
 # Short Responses
 
 For this assessment, aim to write a response with the following qualities:
+
 - [ ] Addresses all parts of the prompt
 - [ ] Accurately uses relevant technical terminology
 - [ ] Is free of grammar and spelling mistakes
@@ -26,7 +27,7 @@ const getLetterGrade = (score) => {
   }
 
   return "Your grade is: " + letter;
-}
+};
 
 console.log(getLetterGrade(95)); // This should print "Your grade is: A"
 console.log(getLetterGrade(82)); // This should print "Your grade is: B"
@@ -42,11 +43,19 @@ console.log(getLetterGrade(65)); // This should print "Your grade is: F"
 
 **Part A:**
 
-Your response...
+The bug happens because the variable letter is declared inside each block scope of the if, else if, and else statements using let. In Java script `let` is block- scoped meaning that only one variable exists inside the `{}` where it was created. Even though each branch sets **letter**, once the code leaves those `{}` , the variable doesnt exist anymore. and when the function tries to return
+
+```
+"your grade is:" + letter
+```
+
+The outer scope has no variable named letter, so it bascially evaluates to undefined.
+
+This is called a scope error, especially when a block-scope variable leak caused by declaring a letter in the wrong scope.
 
 **Part B:**
 
-Your response...
+To fix this we should declare letter once in the parent function scope, than assign it to your condition.
 
 ---
 
@@ -69,11 +78,31 @@ console.log(originalSettings.volume);
 
 **Part A:**
 
-Your response...
+The const will log the original setting 50, this happens because newSetting and originalSetting are referencing to the same object in memory. In Javascript objects are mostly passed by references, not by the value. so whe you do:
+
+```
+const newSetting = originalSettings;
+```
+
+both variables are pointing to the same object.
+
+This also updates originalSetting.volume because they both reference the same memory place.
 
 **Part B:**
 
-Your response...
+To prevent changes to newSetting from affecting the original object, you should create an copy instead of sharing the same reference. A common fix we can use is the `spread operator` which will create a shallow clone.
+
+```
+const originalSetting = {volume: 50, brightness: 50};
+
+const newSettings = {...originalSettings};
+
+newSettings.volume = 75;
+
+console.log(originalSettings.volume)
+```
+
+Now `newSetting` and `originalSetting` are two different objects, so when trying to edit one does not accidentally edit the other one.
 
 **Corrected Code:**
 
@@ -90,6 +119,7 @@ console.log(originalSettings.volume);
 ## Prompt 3
 
 Given this array of products and the code using `filter`:
+
 ```js
 const products = [
   { name: "Laptop", price: 1000, inStock: true },
@@ -99,15 +129,34 @@ const products = [
 ];
 
 const itemsInStock = products.filter((product) => {
-  return product.inStock
+  return product.inStock;
 });
 ```
 
 Walk through what happens in the first iteration of filter:
+
 - What is the value of `product`?
 - What gets returned from the callback?
 - What happens with that returned value?
 
 ### Response 3
 
-Your response...
+**The value of the product**
+
+On the code the product is the first object in the array.
+
+```
+{ name: "Laptop", price: 1000, inStock: true },
+```
+
+**what get returned from the first callback**
+
+```
+product.instock
+```
+
+for the first product the value is `true`
+
+**what happends with the returned value**
+
+.filter keeps only elements where the callback returns a truthy value. Since true was returned, the first product is added to the new array `itemsInStock`
